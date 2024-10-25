@@ -20,7 +20,5 @@ async def next_anime(callback: CallbackQuery, callback_data: AnimeRequestData):
     msg, poster = format_anime_message(anime_list[offset])
     await callback.message.edit_media(
         media=InputMediaPhoto(caption=msg, media=poster),
-        reply_markup=build_anime_pagination_kb(
-            message=request, offset=offset
-        ),
+        reply_markup=build_anime_pagination_kb(message=request, offset=offset),
     )

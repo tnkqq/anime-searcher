@@ -7,7 +7,7 @@ from loader import bot, dp
 
 
 async def main(Dispatcher):
-    from handlers import commands_handlers, callback_handlers, message_handlers
+    from handlers import callback_handlers, commands_handlers, message_handlers
 
     await dp.start_polling(bot)
 

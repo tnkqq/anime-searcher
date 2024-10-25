@@ -11,14 +11,6 @@ class AnimeRequestData(CallbackData, prefix="anime-api-reponse-data"):
     offset: int
 
 
-# anime_keyboard_buttons = [
-#     [
-#     InlineKeyboardButton(text='◀️', callback_data='prev_anime'),
-#     InlineKeyboardButton(text='▶️', callback_data='next_anime'),
-#     ]
-# ]
-
-
 def build_anime_pagination_kb(
     message: str,
     offset: int = 0,
@@ -32,6 +24,3 @@ def build_anime_pagination_kb(
         return builder.as_markup()
     except ValidationError as e:
         print(e.json())
-
-
-# anime_keyboard = InlineKeyboardMarkup(inline_keyboard=anime_keyboard_buttons)
