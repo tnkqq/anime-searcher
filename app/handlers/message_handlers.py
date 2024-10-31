@@ -25,8 +25,6 @@ async def anime_by_title(message: Message, state: FSMContext) -> None:
     except IndexError:
         answer = await message.answer(text="Anime Not found")
     except TelegramBadRequest:
-        answer = await message.answer(
-            text="Перезапустите бота для корректной!"
-        )
+        answer = await message.answer(text="Перезапустите бота для корректной!")
     finally:
         await state.update_data(msg_to_edit=answer.message_id)
