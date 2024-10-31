@@ -1,9 +1,9 @@
-from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from config import settings
+from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlalchemy.orm import DeclarativeBase
 
 async_engine = create_async_engine(
-    echo = True,
+    echo=True,
     url=settings.DATABASE_URL_asyncpg,
     pool_size=5,
     max_overflow=10,
