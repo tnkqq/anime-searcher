@@ -1,12 +1,13 @@
 # .env example
 
 ```python
-BOT_TOKEN = 
+BOT_TOKEN=
+POSTGRES_PASSWORD=
+POSTGRES_USER=
+POSTGRES_DB=
 DB_HOST=
 DB_PORT=
-DB_USER=
-DB_PASS=
-DB_NAME= 
+DB_NAME=
 ```
 ---
 
