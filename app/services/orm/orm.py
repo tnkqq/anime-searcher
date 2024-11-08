@@ -8,6 +8,7 @@ class AnimeORM:
     @staticmethod
     async def create_tables():
         async with async_engine.begin() as conn:
+            await conn.run_sync(Base.metadata.drop_all)
             await conn.run_sync(Base.metadata.create_all)
 
     @staticmethod
@@ -16,24 +17,39 @@ class AnimeORM:
             await conn.run_sync(Base.metadata.drop_all)
 
     @staticmethod
+    async def insert_new_user(telegram_id: int = None, username: str = None):
+        async with async_session_factory() as session:
+            user = {
+                "telegram_id": telegram_id,
+                "username": username,
+            }
+            query = insert(
+                User,
+            ).values(user)
+
+            await session.execute(query)
+            await session.commit()
+
+    @staticmethod
     async def select_anime_rate_by_telegram_user(
-        telegram_user_id: int,
-        anime_id: int
+        telegram_user_id: int, anime_id: int
     ):
         async with async_session_factory() as session:
-            user_query = select(User).filter(
-                User.telegram_id == telegram_user_id
-            )
+            try:
+                user_query = select(User).filter(
+                    User.telegram_id == telegram_user_id
+                )
 
-            score_query = select(RatedAnimeModel.score).filter(
-                RatedAnimeModel.anime_id == anime_id,
-                RatedAnimeModel.user_id == user_query.c.id,
-            )
+                score_query = select(RatedAnimeModel.score).filter(
+                    RatedAnimeModel.anime_id == anime_id,
+                    RatedAnimeModel.user_id == user_query.c.id,
+                )
 
-            res = await session.execute(score_query)
-            result = res.scalars().first()
-
-            return result
+                res = await session.execute(score_query)
+                result = res.scalars().first()
+                return result
+            except:
+                return None
 
     @staticmethod
     async def insert_anime_rate_by_user(anime_id: int, score: int, **kwargs):

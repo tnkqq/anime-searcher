@@ -10,6 +10,12 @@ services:
     image: redis
     volumes:
       - redis-data:/data
+  db:
+    image: postgres
+    env_file: .env
+    volumes:
+      - pg_data:/var/lib/postgresql/data 
 
 volumes:
   redis-data:
+  pg_data:
