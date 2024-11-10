@@ -1,19 +1,23 @@
 from aiogram.types import CallbackQuery, InputMediaPhoto
-from keyboards.inline_keyboards import (AnimeRateData, AnimeRequestData,
-                                        build_anime_pagination_kb)
+from keyboards.inline_keyboards import (
+    AnimeRateData,
+    AnimeRequestData,
+    build_anime_pagination_kb,
+)
 from loader import dp
 from services.api import Animeapi
 from services.orm.orm import AnimeORM
 
+
 from .formatters import format_anime_message
+from aiogram.exceptions import TelegramBadRequest
 
 
 @dp.callback_query(AnimeRequestData.filter())
 async def pagination(callback: CallbackQuery, callback_data: AnimeRequestData):
     request = callback_data.message
     offset = callback_data.offset
-    anime = Animeapi(request)
-    anime_list = anime.fetch_anime_data_by_title()
+    anime_list = await Animeapi.get_anime_by_title(request)
     if offset > len(anime_list) - 1:
         offset = 0
     elif offset < 0:
@@ -23,15 +27,18 @@ async def pagination(callback: CallbackQuery, callback_data: AnimeRequestData):
         anime_id=int(anime_list[offset].get("id")),
     )
     msg, poster = format_anime_message(anime_list[offset])
-    await callback.message.edit_media(
-        media=InputMediaPhoto(caption=msg, media=poster),
-        reply_markup=build_anime_pagination_kb(
-            message=request,
-            offset=offset,
-            user_rate=user_anime_rate,
-            anime_id=anime_list[offset].get("id"),
-        ),
-    )
+    try:
+        await callback.message.edit_media(
+            media=InputMediaPhoto(caption=msg, media=poster),
+            reply_markup=build_anime_pagination_kb(
+                message=request,
+                offset=offset,
+                user_rate=user_anime_rate,
+                anime_id=anime_list[offset].get("id"),
+            ),
+        )
+    except TelegramBadRequest:
+        pass
 
 
 @dp.callback_query(AnimeRateData.filter())

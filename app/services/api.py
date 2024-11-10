@@ -1,20 +1,13 @@
-import requests
+import aiohttp
 from fake_useragent import UserAgent
-
-URL = "https://shikimori.one/api/graphql/"
+from config import settings
 
 
 class Animeapi:
-
-    def __init__(self, title):
-        self.title = title
-        self.url = URL
-        self.headers = {"User-Agent": UserAgent().chrome}
-
-    @property
-    def query(self):
-        query = f"""{{
-        animes(search: "{self.title}", limit: 20, kind: "!special") {{
+    @staticmethod
+    def graphql_get_anime_request_format(title):
+        return f"""{{
+        animes(search: "{title}", limit: 20, kind: "!special") {{
             id
             name
             score
@@ -27,12 +20,15 @@ class Animeapi:
             genres {{ name russian kind }}
             studios {{  name  }}
         }}
-        }}
-        """
-        return query
+        }}"""
 
-    def fetch_anime_data_by_title(self):
-        response = requests.post(
-            url=self.url, json={"query": self.query}, headers=self.headers
-        )
-        return response.json()["data"].get("animes")
+    @classmethod
+    async def get_anime_by_title(cls, title):
+        async with aiohttp.ClientSession() as session:
+            headers = {"User-Agent": UserAgent().chrome}
+            query = cls.graphql_get_anime_request_format(title)
+            response = await session.post(
+                settings.API_URL, json={"query": query}, headers=headers
+            )
+            resp = await response.json()
+            return resp["data"].get("animes")

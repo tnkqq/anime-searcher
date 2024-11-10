@@ -15,8 +15,7 @@ async def anime_by_title(message: Message, state: FSMContext) -> None:
     msg_to_edit = (await state.get_data()).get("msg_id_edit")
     answer = None
     try:
-        anime = Animeapi(title=message.text)
-        anime_list = anime.fetch_anime_data_by_title()
+        anime_list = await Animeapi.get_anime_by_title(message.text)
 
         user_anime_rate = await AnimeORM.select_anime_rate_by_telegram_user(
             telegram_user_id=message.from_user.id,
