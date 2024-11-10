@@ -2,7 +2,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    bot_token: str
+    BOT_TOKEN: str
     API_URL: str
     DB_HOST: str
     DB_PORT: int
