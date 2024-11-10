@@ -22,7 +22,7 @@ docker-compose up
 ---
 # Description
 
-Telegram bot for anime search anime. Work with shikimori graphql api.
+Telegram bot for search and rate anime. Work with shikimori graphql api.
 FSM used Redis as storage. SQLAlchemy as ORM. PostgreSQL as db. 
 
 ---
